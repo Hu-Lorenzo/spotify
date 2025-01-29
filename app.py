@@ -16,8 +16,9 @@ sp_oauth = SpotifyOAuth(
     client_id=SPOTIFY_CLIENT_ID,
     client_secret=SPOTIFY_CLIENT_SECRET,
     redirect_uri=SPOTIFY_REDIRECT_URI,
-    scope="user-read-private" #permessi x informazioni dell'utente
+    scope="playlist-modify-public playlist-modify-private user-read-private user-read-email"
 )
+
 @app.route('/')
 def login():
     auth_url = sp_oauth.get_authorize_url() #login di spotify
@@ -37,6 +38,17 @@ def home():
     user_info = sp.current_user()
     print(user_info) #capiamo la struttura di user_info per usarle nel frontend
     return render_template('home.html', user_info=user_info) #passo le info utente all'home.html
+@app.route('/create_playlist')
+def create_playlist():
+    token_info = session.get('token_info')
+    if not token_info:
+        return redirect(url_for('login'))
 
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    
+    user_id = sp.me()['id']  # Ottiene l'ID dell'utente autenticato
+    playlist = sp.user_playlist_create(user=user_id, name="La Mia Playlist", public=True, description="Playlist creata con Flask!")
+
+    return f"Playlist '{playlist['name']}' creata con successo! <a href='{playlist['external_urls']['spotify']}'>Apri su Spotify</a>"
 if __name__ == '__main__':
     app.run(debug=True)
