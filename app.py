@@ -46,17 +46,5 @@ def home():
 def logout():
     session.clear() #cancelliamo l'access token salvato in session
     return redirect(url_for('login'))
-@app.route('/create_playlist')
-def create_playlist():
-    token_info = session.get('token_info')
-    if not token_info:
-        return redirect(url_for('login'))
-
-    sp = spotipy.Spotify(auth=token_info['access_token'])
-    
-    user_id = sp.me()['id']  # Ottiene l'ID dell'utente autenticato
-    playlist = sp.user_playlist_create(user=user_id, name="La Mia Playlist", public=True, description="Playlist creata con Flask!")
-
-    return f"Playlist '{playlist['name']}' creata con successo! <a href='{playlist['external_urls']['spotify']}'>Apri su Spotify</a>"
 if __name__ == '__main__':
     app.run(debug=True)
