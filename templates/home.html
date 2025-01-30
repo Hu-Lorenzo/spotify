@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,10 +7,13 @@
 </head>
 <body>
     <h1>Benvenuto, {{ user_info['display_name'] }}!</h1>
+    
     {% if user_info['images'] %}
         <img src="{{ user_info['images'][0]['url'] }}" width="200" alt="Immagine profilo">
     {% endif %}
+    
     <h2>Le tue Playlist:</h2>
+    
     {% if playlists %}
         <table>
             <thead>
@@ -19,6 +21,7 @@
                     <th>|Nome Playlist|</th>
                     <th>|Numero di Brani|</th>
                     <th>|Copertina|</th>
+                    <th>|Azioni|</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,20 +29,46 @@
                     <tr>
                         <td>{{ playlist['name'] }}</td>
                         <td>{{ playlist['tracks']['total'] }}</td>
-                    <td>
-                        {% if playlist['images'] %}
-                            <img src="{{ playlist['images'][0]['url'] }}" width="50" alt="Copertina playlist">
-                        {% else %}
-                            Nessuna immagine
-                        {% endif %}
-                    </td>
+                        <td>
+                            {% if playlist['images'] %}
+                                <img src="{{ playlist['images'][0]['url'] }}" width="50" alt="Copertina playlist">
+                            {% else %}
+                                Nessuna immagine
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/home?playlist_id={{ playlist['id'] }}">Visualizza Brani</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Non hai playlist disponibili.</p>
+    {% endif %}
+
+    {% if tracks %}
+        <h3>Brani della Playlist Selezionata:</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Titolo</th>
+                    <th>Artista</th>
+                    <th>Album</th>
                 </tr>
-             {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>Non hai playlist disponibili.</p>
-{% endif %}
-<a href="{{ url_for('logout') }}">Logout</a>
+            </thead>
+            <tbody>
+                {% for track in tracks %}
+                    <tr>
+                        <td>{{ track.name }}</td>
+                        <td>{{ track.artist }}</td>
+                        <td>{{ track.album }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <a href="{{ url_for('logout') }}">Logout</a>
 </body>
 </html>

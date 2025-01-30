@@ -30,17 +30,32 @@ def callback():
     token_info = sp_oauth.get_access_token(code) #uso il code per un codice di accesso
     session['token_info'] = token_info #salvo il token nella mia sessione x riutilizzarlo
     return redirect(url_for('home'))
-@app.route('/home')
+@app.route('/home', methods=['GET', 'POST'])
 def home():
-    token_info = session.get('token_info', None) #recupero token sissione (salvato prima)
+    token_info = session.get('token_info', None)  
     if not token_info:
         return redirect(url_for('login'))
-    sp = spotipy.Spotify(auth=token_info['access_token']) #usiamo il token per ottenere i dati del profilo
+
+    sp = spotipy.Spotify(auth=token_info['access_token'])  
     user_info = sp.current_user()
-    print(user_info) #capiamo la struttura di user_info per usarle nel frontend
-    playlists = sp.current_user_playlists() #sempre tramite il token sp preso prima
-    playlists_info = playlists['items']
-    return render_template('home.html', user_info=user_info, playlists=playlists_info)
+    playlists = sp.current_user_playlists()['items']  
+
+    tracks = []  
+
+    if playlists:  
+        playlist_id = request.args.get('playlist_id', playlists[0]['id'])  
+        
+        playlist_tracks = sp.playlist_items(playlist_id)
+
+        tracks = [{
+            'name': track['track']['name'],
+            'artist': track['track']['artists'][0]['name'],
+            'album': track['track']['album']['name'],
+            'image': track['track']['album']['images'][0]['url'] if track['track']['album']['images'] else None
+        } for track in playlist_tracks['items']]
+
+    return render_template('home.html', user_info=user_info, playlists=playlists, tracks=tracks)
+
 
 @app.route('/logout')
 def logout():
