@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brani della Playlist</title>
+</head>
+<body>
+    <h1>Brani della Playlist</h1>
+
+    {% if tracks %}
+        <table>
+            <thead>
+                <tr>
+                    <th>| Titolo |</th>
+                    <th>| Artista |</th>
+                    <th>| Album |</th>
+                    <th>| Copertina |</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for track in tracks %}
+                    <tr>
+                        <td>{{ track.name }}</td>
+                        <td>{{ track.artist }}</td>
+                        <td>{{ track.album }}</td>
+                        <td>
+                            {% if track.image %}
+                                <img src="{{ track.image }}" width="50" alt="Copertina album">
+                            {% else %}
+                                Nessuna immagine
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nessun brano disponibile per questa playlist.</p>
+    {% endif %}
+
+    <br>
+    <a href="{{ url_for('home') }}">Torna alle Playlist</a>
+</body>
+</html>

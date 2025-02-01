@@ -18,10 +18,10 @@
         <table>
             <thead>
                 <tr>
-                    <th>|Nome Playlist|</th>
-                    <th>|Numero di Brani|</th>
-                    <th>|Copertina|</th>
-                    <th>|Azioni|</th>
+                    <th>| Nome Playlist |</th>
+                    <th>| Numero di Brani |</th>
+                    <th>| Copertina |</th>
+                    <th>| Azioni |</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,7 +37,7 @@
                             {% endif %}
                         </td>
                         <td>
-                            <a href="/home?playlist_id={{ playlist['id'] }}">Visualizza Brani</a>
+                            <a href="{{ url_for('playlist', playlist_id=playlist['id']) }}">Visualizza Brani</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -47,28 +47,7 @@
         <p>Non hai playlist disponibili.</p>
     {% endif %}
 
-    {% if tracks %}
-        <h3>Brani della Playlist Selezionata:</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Titolo</th>
-                    <th>Artista</th>
-                    <th>Album</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for track in tracks %}
-                    <tr>
-                        <td>{{ track.name }}</td>
-                        <td>{{ track.artist }}</td>
-                        <td>{{ track.album }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
-
+    <br>
     <a href="{{ url_for('logout') }}">Logout</a>
 </body>
 </html>
